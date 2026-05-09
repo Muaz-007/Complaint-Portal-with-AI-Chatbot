@@ -1,0 +1,77 @@
+/* ==========================================================================
+   Smart University Complaint Portal — custom styles
+   Layered on top of Bootstrap 5
+   ========================================================================== */
+
+:root {
+    --scp-primary: #0d6efd;
+    --scp-primary-dark: #0a58ca;
+    --scp-bg: #f5f7fb;
+    --scp-card-radius: 0.75rem;
+}
+
+body {
+    background-color: var(--scp-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                 Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+/* ---------- Layout ---------- */
+main.container {
+    min-height: calc(100vh - 200px);
+}
+
+/* ---------- Navbar ---------- */
+.navbar-brand {
+    letter-spacing: 0.2px;
+}
+
+.navbar .dropdown-menu {
+    border: 0;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- Cards ---------- */
+.card {
+    border-radius: var(--scp-card-radius);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card.shadow-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ---------- Forms ---------- */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--scp-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* ---------- Status badges (used from Sprint 1+) ---------- */
+.badge-status-pending     { background-color: #ffc107; color: #212529; }
+.badge-status-in-progress { background-color: #0dcaf0; color: #212529; }
+.badge-status-on-hold     { background-color: #6c757d; color: #fff; }
+.badge-status-resolved    { background-color: #198754; color: #fff; }
+.badge-status-closed      { background-color: #343a40; color: #fff; }
+.badge-status-reopened    { background-color: #fd7e14; color: #fff; }
+
+.badge-priority-low       { background-color: #adb5bd; color: #fff; }
+.badge-priority-medium    { background-color: #0d6efd; color: #fff; }
+.badge-priority-high      { background-color: #fd7e14; color: #fff; }
+.badge-priority-urgent    { background-color: #dc3545; color: #fff; }
+
+/* ---------- Footer ---------- */
+footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- Utilities ---------- */
+.cursor-pointer { cursor: pointer; }
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

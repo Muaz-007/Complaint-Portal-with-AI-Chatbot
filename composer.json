@@ -1,0 +1,14 @@
+{
+    "name": "muaz/complaint-portal-with-ai-chatbot",
+    "description": "Smart University Complaint Portal with AI Chatbot — PHP 8 + MySQL 8",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "phpmailer/phpmailer": "^6.9",
+        "tecnickcom/tcpdf": "^6.7"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
