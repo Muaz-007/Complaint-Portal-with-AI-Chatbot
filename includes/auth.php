@@ -34,7 +34,7 @@ function start_secure_session(): void
 function enforce_idle_timeout(): void
 {
     $now = time();
-    if (isset($_SESSION['_last_activity']) && ($now - $_SESSION['_last_activity']) > SESSION_LIFETIME) {
+    if (isset($_SESSION['_last_activity']) && $now - $_SESSION['_last_activity'] > SESSION_LIFETIME) {
         logout_user();
         flash('info', 'Your session has expired. Please log in again.');
         redirect('public/login.php');
@@ -71,7 +71,17 @@ function login_user(string $role, array $user): void
         'id'    => (int) $user[$idKey],
         'name'  => $user['name']  ?? '',
         'email' => $user['email'] ?? '',
+        // Staff carry their department for routing/filtering
+        'department_id' => isset($user['department_id']) ? (int) $user['department_id'] : null,
     ];
+}
+
+/**
+ * Department ID of the currently logged-in staff member, or null.
+ */
+function current_user_dept(): ?int
+{
+    return $_SESSION['user']['department_id'] ?? null;
 }
 
 /**
