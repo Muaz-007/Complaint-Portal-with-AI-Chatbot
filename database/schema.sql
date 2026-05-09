@@ -16,6 +16,7 @@ USE `university_complaints`;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `audit_log`;
 DROP TABLE IF EXISTS `chatbot_logs`;
+DROP TABLE IF EXISTS `faqs`;
 DROP TABLE IF EXISTS `feedback`;
 DROP TABLE IF EXISTS `complaint_messages`;
 DROP TABLE IF EXISTS `complaints`;
@@ -176,7 +177,23 @@ CREATE TABLE `chatbot_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
--- 9. audit_log — admin-visible trail of all sensitive actions
+-- 9. faqs — AI chatbot knowledge base (managed by admin)
+-- ---------------------------------------------------------------------
+CREATE TABLE `faqs` (
+    `faq_id`        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `category`      VARCHAR(50) DEFAULT 'general',
+    `keywords`      VARCHAR(500) NOT NULL,
+    `question`      VARCHAR(500) NOT NULL,
+    `answer`        TEXT NOT NULL,
+    `is_active`     TINYINT(1) NOT NULL DEFAULT 1,
+    `hit_count`     INT UNSIGNED NOT NULL DEFAULT 0,
+    `created_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_faqs_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- 10. audit_log — admin-visible trail of all sensitive actions
 -- ---------------------------------------------------------------------
 CREATE TABLE `audit_log` (
     `audit_id`       BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -209,3 +226,36 @@ INSERT INTO `admins` (`name`, `email`, `password_hash`) VALUES
 ('System Administrator',
  'admin@university.edu',
  '$2y$10$EQGwxjx0l8btC56IhBBPwOur05reeT9s.3OflnIppDVkIVPThjIRu');
+
+-- Starter FAQs for the AI chatbot (admin can edit/extend later)
+INSERT INTO `faqs` (`category`, `keywords`, `question`, `answer`) VALUES
+('Library',      'library, hours, timing, open, close',
+ 'What are the library timings?',
+ 'The library is open Monday to Friday, 8:00 AM to 10:00 PM, and on weekends from 10:00 AM to 6:00 PM.'),
+('Examinations', 'exam, examination, schedule, date sheet, datesheet',
+ 'When is the exam date sheet announced?',
+ 'The exam date sheet is typically announced 2 weeks before the start of examinations on the Examinations department portal.'),
+('Examinations', 'exam form, exam fee, deadline, submit',
+ 'What is the exam form submission deadline?',
+ 'Exam form submissions usually close 4 weeks before the exam start date. Check the Examinations department for the exact date.'),
+('Hostel',       'hostel, room, allocation, accommodation',
+ 'How do I apply for a hostel room?',
+ 'Submit a formal complaint under the Hostel category with your preferred block. Allocation is processed by the Hostel office.'),
+('Hostel',       'hostel, maintenance, repair, broken',
+ 'How do I report a broken item in my hostel?',
+ 'File a complaint under the Hostel category with a photo attachment. Maintenance staff are notified automatically.'),
+('Finance',      'fee, fees, structure, tuition, payment',
+ 'Where can I see the fee structure?',
+ 'Fee structure is published on the university website under Finance. For specific queries, file a complaint under the Finance category.'),
+('Finance',      'refund, fee refund, withdraw',
+ 'How do I request a fee refund?',
+ 'Submit a complaint under the Finance category with your reason and supporting documents. Refunds are processed within 14 working days.'),
+('Academics',    'course, registration, register, semester',
+ 'How do I register for courses?',
+ 'Course registration is done via the academic portal at the start of each semester. Contact your department coordinator if you face issues.'),
+('IT Support',   'wifi, internet, network, password, login',
+ 'How do I get the campus Wi-Fi password?',
+ 'Wi-Fi credentials are provided by the IT Support department. Submit a complaint under the IT Support category if you have not received them.'),
+('General',      'help, support, complaint, how, file',
+ 'How do I file a formal complaint?',
+ 'Click "Submit Complaint" in your dashboard, pick a category, describe the issue, and optionally attach a file. You will get a reference number to track it.');
