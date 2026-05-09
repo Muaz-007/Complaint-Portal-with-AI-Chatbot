@@ -193,7 +193,7 @@ CREATE TABLE `audit_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================================
--- Seed data — minimal departments so login/complaint forms have options
+-- Seed data — departments + a default super admin so the app is usable
 -- =====================================================================
 INSERT INTO `departments` (`name`, `description`) VALUES
 ('Academics',    'Academic-related complaints and inquiries'),
@@ -201,3 +201,11 @@ INSERT INTO `departments` (`name`, `description`) VALUES
 ('Finance',      'Fees, refunds, and financial matters'),
 ('Examinations', 'Exam schedules, results, and grievances'),
 ('IT Support',   'Network, software, and technical issues');
+
+-- Default Super Administrator
+--   Email:    admin@university.edu
+--   Password: admin123     (bcrypt-hashed below — please change after first login)
+INSERT INTO `admins` (`name`, `email`, `password_hash`) VALUES
+('System Administrator',
+ 'admin@university.edu',
+ '$2y$10$EQGwxjx0l8btC56IhBBPwOur05reeT9s.3OflnIppDVkIVPThjIRu');

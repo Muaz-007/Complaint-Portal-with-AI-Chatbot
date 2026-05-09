@@ -1,16 +1,77 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
 start_secure_session();
 
 if (is_logged_in()) {
     redirect(current_role() . '/dashboard.php');
 }
 
+$old_role = '';
+$old_identifier = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
-    // TODO Sprint 1: validate credentials against students/staff/admins tables.
-    flash('info', 'Authentication will be implemented in Sprint 1.');
-    redirect('public/login.php');
+
+    $role       = $_POST['role'] ?? '';
+    $identifier = trim((string) ($_POST['identifier'] ?? ''));
+    $password   = (string) ($_POST['password'] ?? '');
+
+    $old_role = $role;
+    $old_identifier = $identifier;
+
+    if (!in_array($role, ['student', 'staff', 'admin'], true)) {
+        flash('error', 'Please select a valid role.');
+    } elseif ($identifier === '' || $password === '') {
+        flash('error', 'Email/Roll No and password are required.');
+    } else {
+        try {
+            $user = find_user_for_login($role, $identifier);
+
+            if ($user && (int) $user['is_active'] === 1 && password_verify($password, $user['password_hash'])) {
+                login_user($role, $user);
+                flash('success', 'Welcome back, ' . $user['name'] . '!');
+
+                // Update last_login_at for admins
+                if ($role === 'admin') {
+                    db()->prepare('UPDATE admins SET last_login_at = NOW() WHERE admin_id = ?')
+                        ->execute([$user['admin_id']]);
+                }
+
+                redirect($role . '/dashboard.php');
+            } elseif ($user && (int) $user['is_active'] !== 1) {
+                flash('error', 'Your account has been deactivated. Please contact support.');
+            } else {
+                flash('error', 'Invalid email/roll number or password.');
+            }
+        } catch (Throwable $e) {
+            flash('error', APP_DEBUG ? 'Login error: ' . $e->getMessage() : 'Login failed. Please try again.');
+        }
+    }
+
+    // Fall through to render the form with the flash
+}
+
+/**
+ * Look up a user record by role + identifier (email, or roll_no for students).
+ */
+function find_user_for_login(string $role, string $identifier): ?array
+{
+    $pdo = db();
+    if ($role === 'student') {
+        $sql = 'SELECT student_id, name, email, password_hash, is_active
+                FROM students WHERE email = :id OR roll_no = :id LIMIT 1';
+    } elseif ($role === 'staff') {
+        $sql = 'SELECT staff_id, name, email, password_hash, is_active, department_id
+                FROM staff WHERE email = :id LIMIT 1';
+    } else {
+        $sql = 'SELECT admin_id, name, email, password_hash, is_active
+                FROM admins WHERE email = :id LIMIT 1';
+    }
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $identifier]);
+    $row = $stmt->fetch();
+    return $row ?: null;
 }
 
 $page_title = 'Login';
@@ -82,16 +143,17 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="mb-3">
                     <label for="role" class="form-label">I am a</label>
                     <select name="role" id="role" class="form-select" required>
-                        <option value="student">Student</option>
-                        <option value="staff">Department Staff</option>
-                        <option value="admin">Administrator</option>
+                        <option value="student" <?= $old_role === 'student' ? 'selected' : '' ?>>Student</option>
+                        <option value="staff"   <?= $old_role === 'staff'   ? 'selected' : '' ?>>Department Staff</option>
+                        <option value="admin"   <?= $old_role === 'admin'   ? 'selected' : '' ?>>Administrator</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="identifier" class="form-label">Email or Roll No.</label>
                     <input type="text" id="identifier" name="identifier" class="form-control"
-                           placeholder="you@university.edu" required autocomplete="username">
+                           placeholder="you@university.edu" value="<?= e($old_identifier) ?>"
+                           required autocomplete="username">
                 </div>
 
                 <div class="mb-3">
@@ -101,11 +163,6 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                     <input type="password" id="password" name="password" class="form-control"
                            placeholder="••••••••" required autocomplete="current-password">
-                </div>
-
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="remember">
-                    <label class="form-check-label small" for="remember">Keep me signed in</label>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 btn-lg">
