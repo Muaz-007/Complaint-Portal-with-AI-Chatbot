@@ -43,41 +43,61 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
 
             <div class="col-lg-5 d-none d-lg-block fade-up delay-2">
-                <div class="position-relative" style="height:380px;">
-                    <!-- Floating chat-like cards -->
-                    <div class="card border-0 shadow-lg position-absolute"
-                         style="width:280px;top:20px;right:0;border-radius:1rem;backdrop-filter:blur(10px);background:rgba(255,255,255,0.95);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <div class="brand-mark" style="width:32px;height:32px;font-size:0.85rem;">
-                                    <i class="bi bi-robot text-white"></i>
-                                </div>
-                                <strong style="color:var(--text-900);">AI Assistant</strong>
-                                <span class="badge bg-success ms-auto" style="font-size:0.65rem;">ONLINE</span>
+                <div class="hero-cards">
+                    <!-- AI chat card -->
+                    <div class="hero-card hero-card-ai">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="brand-mark" style="width:36px;height:36px;font-size:0.95rem;">
+                                <i class="bi bi-robot text-white"></i>
                             </div>
-                            <p class="small mb-0" style="color:var(--text-600);">
-                                "What are the library timings?"
-                            </p>
-                            <p class="small mb-0 mt-2 p-2" style="color:var(--text-700);background:var(--primary-50);border-radius:0.5rem;">
-                                The library is open <strong>8:00 AM – 10:00 PM</strong> on weekdays
-                                and <strong>10:00 AM – 6:00 PM</strong> on weekends.
-                            </p>
+                            <div>
+                                <div class="fw-semibold" style="color:var(--text-900);font-size:0.92rem;">AI Assistant</div>
+                                <small style="color:var(--success);font-size:0.72rem;display:flex;align-items:center;gap:0.25rem;">
+                                    <span class="online-dot"></span> Online · replies in seconds
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="chat-bubble chat-bubble-user mb-2">
+                            What are the library timings?
+                        </div>
+                        <div class="chat-bubble chat-bubble-bot">
+                            The library is open <strong>8 AM – 10 PM</strong> on weekdays and
+                            <strong>10 AM – 6 PM</strong> on weekends.
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-lg position-absolute"
-                         style="width:260px;bottom:20px;left:10px;border-radius:1rem;background:rgba(255,255,255,0.95);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <small class="fw-semibold" style="color:var(--text-700);">CMP-2026-0042</small>
-                                <span class="badge badge-status-resolved">Resolved</span>
-                            </div>
-                            <div class="fw-semibold mb-1" style="color:var(--text-900);">Hostel maintenance</div>
-                            <small style="color:var(--text-500);">
-                                <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                Resolved in 2 days
-                            </small>
+                    <!-- Complaint status card -->
+                    <div class="hero-card hero-card-ticket">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <code style="color:var(--primary-600);font-weight:600;font-size:0.78rem;">CMP-2026-0042</code>
+                            <span class="badge badge-status-resolved">Resolved</span>
                         </div>
+                        <div class="fw-semibold mb-3" style="color:var(--text-900);">Hostel maintenance</div>
+                        <div class="ticket-timeline">
+                            <div class="ticket-step done">
+                                <div class="dot"><i class="bi bi-check-lg"></i></div>
+                                <small>Submitted</small>
+                            </div>
+                            <div class="ticket-step done">
+                                <div class="dot"><i class="bi bi-check-lg"></i></div>
+                                <small>In Progress</small>
+                            </div>
+                            <div class="ticket-step done">
+                                <div class="dot"><i class="bi bi-check-lg"></i></div>
+                                <small>Resolved</small>
+                            </div>
+                        </div>
+                        <small class="d-block mt-3" style="color:var(--text-500);font-size:0.75rem;">
+                            <i class="bi bi-stopwatch-fill me-1" style="color:var(--success);"></i>
+                            Resolved in 2 days
+                        </small>
+                    </div>
+
+                    <!-- Floating notification pill -->
+                    <div class="hero-pill">
+                        <i class="bi bi-bell-fill" style="color:var(--warning);font-size:0.95rem;"></i>
+                        <small style="color:var(--text-700);font-weight:600;">3 new updates</small>
                     </div>
                 </div>
             </div>

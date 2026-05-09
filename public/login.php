@@ -62,17 +62,20 @@ function find_user_for_login(string $role, string $identifier): ?array
 {
     $pdo = db();
     if ($role === 'student') {
-        $sql = 'SELECT student_id, name, email, password_hash, is_active
-                FROM students WHERE email = :id OR roll_no = :id LIMIT 1';
+        $sql    = 'SELECT student_id, name, email, password_hash, is_active
+                   FROM students WHERE email = ? OR roll_no = ? LIMIT 1';
+        $params = [$identifier, $identifier];
     } elseif ($role === 'staff') {
-        $sql = 'SELECT staff_id, name, email, password_hash, is_active, department_id
-                FROM staff WHERE email = :id LIMIT 1';
+        $sql    = 'SELECT staff_id, name, email, password_hash, is_active, department_id
+                   FROM staff WHERE email = ? LIMIT 1';
+        $params = [$identifier];
     } else {
-        $sql = 'SELECT admin_id, name, email, password_hash, is_active
-                FROM admins WHERE email = :id LIMIT 1';
+        $sql    = 'SELECT admin_id, name, email, password_hash, is_active
+                   FROM admins WHERE email = ? LIMIT 1';
+        $params = [$identifier];
     }
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':id' => $identifier]);
+    $stmt->execute($params);
     $row = $stmt->fetch();
     return $row ?: null;
 }

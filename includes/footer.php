@@ -40,7 +40,7 @@ $auth_layout = $auth_layout ?? false;
                     Try our AI assistant for instant answers, or submit a formal complaint that gets routed
                     to the right department.
                 </p>
-                <a href="<?= e(url('public/login.php')) ?>" class="btn btn-sm btn-light">
+                <a href="<?= e(url('public/login.php')) ?>" class="btn btn-primary">
                     Get Started <i class="bi bi-arrow-right ms-1"></i>
                 </a>
             </div>

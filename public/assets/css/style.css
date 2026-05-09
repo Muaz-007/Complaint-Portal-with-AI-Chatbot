@@ -78,6 +78,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     line-height: 1.6;
+    overflow-x: hidden; /* prevent 100vw scrollbar artifact from full-bleed sections */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -130,13 +131,17 @@ main.container { min-height: calc(100vh - 240px); }
     display: flex; align-items: center; gap: 0.5rem;
 }
 
-.navbar-brand .brand-mark {
+/* Global brand mark — used in navbar, dropdowns, footer, hero, etc. */
+.brand-mark {
     width: 36px; height: 36px;
     border-radius: 10px;
     background: var(--grad-primary);
     display: inline-flex; align-items: center; justify-content: center;
     color: #fff; font-size: 1.1rem;
+    font-weight: 700;
     box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+    line-height: 1;
 }
 
 .navbar .nav-link {
@@ -300,7 +305,8 @@ main.container { min-height: calc(100vh - 240px); }
     border-color: var(--primary-200);
 }
 
-.feature-card .feature-icon {
+/* Global feature icon — used in feature cards, dashboards, module tiles. */
+.feature-icon {
     width: 64px; height: 64px;
     border-radius: 18px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -309,12 +315,20 @@ main.container { min-height: calc(100vh - 240px); }
     font-size: 1.75rem;
     margin: 0 auto 1.25rem;
     transition: all var(--t);
+    flex-shrink: 0;
+    line-height: 1;
 }
 
 .feature-card:hover .feature-icon {
     background: var(--grad-primary);
     color: #fff;
     transform: scale(1.05);
+}
+
+/* When used inline (dashboards, module tiles) — no auto centering / no bottom margin */
+.card .feature-icon,
+.stat-card .feature-icon {
+    margin: 0;
 }
 
 .feature-card h5 { font-size: 1.1rem; margin-bottom: 0.5rem; }
@@ -382,8 +396,13 @@ main.container { min-height: calc(100vh - 240px); }
     background: var(--grad-hero);
     color: #fff;
     overflow: hidden;
-    border-radius: 0 0 var(--r-xl) var(--r-xl);
     margin-bottom: 3rem;
+    /* Full-bleed: break out of any parent .container */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    /* Cancel the top padding from <main class="container py-4"> */
+    margin-top: -1.5rem;
 }
 
 .hero::before {
@@ -441,6 +460,148 @@ main.container { min-height: calc(100vh - 240px); }
     background: rgba(255, 255, 255, 0.12);
     border-color: #fff;
     color: #fff;
+}
+
+/* ---------- Hero floating cards ---------- */
+.hero-cards {
+    position: relative;
+    height: 460px;
+    perspective: 1200px;
+}
+
+.hero-card {
+    position: absolute;
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow:
+        0 25px 50px -12px rgba(15, 23, 42, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+    padding: 1.1rem 1.2rem;
+    backdrop-filter: blur(20px);
+}
+
+.hero-card-ai {
+    width: 300px;
+    top: 0;
+    right: 10px;
+    transform: rotate(-3deg);
+    animation: heroFloatA 6s ease-in-out infinite;
+    z-index: 2;
+}
+
+.hero-card-ticket {
+    width: 280px;
+    bottom: 30px;
+    left: 0;
+    transform: rotate(3deg);
+    animation: heroFloatB 6s ease-in-out infinite 0.6s;
+    z-index: 1;
+}
+
+.hero-pill {
+    position: absolute;
+    top: 220px;
+    right: -10px;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.5rem 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 18px 32px -10px rgba(15, 23, 42, 0.3);
+    transform: rotate(-2deg);
+    animation: heroFloatA 5s ease-in-out infinite 0.3s;
+    z-index: 3;
+}
+
+@keyframes heroFloatA {
+    0%, 100% { transform: rotate(-3deg) translateY(0); }
+    50%      { transform: rotate(-3deg) translateY(-12px); }
+}
+
+@keyframes heroFloatB {
+    0%, 100% { transform: rotate(3deg) translateY(0); }
+    50%      { transform: rotate(3deg) translateY(-10px); }
+}
+
+.online-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success);
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
+    50%      { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0.10); }
+}
+
+.chat-bubble {
+    padding: 0.6rem 0.85rem;
+    border-radius: 1rem;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    max-width: 90%;
+}
+
+.chat-bubble-user {
+    background: var(--grad-primary);
+    color: #fff;
+    border-bottom-right-radius: 0.3rem;
+    margin-left: auto;
+    box-shadow: 0 6px 12px -4px rgba(79, 70, 229, 0.35);
+}
+
+.chat-bubble-bot {
+    background: var(--bg-soft);
+    color: var(--text-700);
+    border-bottom-left-radius: 0.3rem;
+}
+
+.ticket-timeline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 0.25rem;
+}
+
+.ticket-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px; top: 9px;
+    height: 2px;
+    background: var(--success);
+    z-index: 0;
+}
+
+.ticket-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.ticket-step .dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--success);
+    color: #fff;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18);
+}
+
+.ticket-step small {
+    color: var(--text-600);
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-align: center;
 }
 
 /* ---------- Auth split-screen ---------- */
