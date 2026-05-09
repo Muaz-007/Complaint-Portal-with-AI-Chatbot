@@ -1,0 +1,29 @@
+# Local extracted/temporary files
+/saqib_extracted/
+
+# User uploads (keep folder, not contents)
+/uploads/*
+!/uploads/.gitkeep
+
+# Composer
+/vendor/
+composer.lock
+
+# Environment / secrets
+.env
+.env.local
+config/database.local.php
+
+# Logs
+*.log
+/logs/*
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Build artifacts
+*.cache
