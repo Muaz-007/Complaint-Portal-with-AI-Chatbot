@@ -109,13 +109,13 @@ require_once __DIR__ . '/../includes/header.php';
         </a>
     </div>
     <div class="col-md-4">
-        <a href="#" class="card border-0 shadow-sm h-100 text-decoration-none">
+        <a href="<?= e(url('student/chatbot.php')) ?>" class="card border-0 shadow-sm h-100 text-decoration-none">
             <div class="card-body text-center py-4">
                 <div class="feature-icon mx-auto mb-3" style="width:56px;height:56px;font-size:1.4rem;">
                     <i class="bi bi-chat-dots-fill"></i>
                 </div>
                 <h6 class="mb-1">Ask AI Assistant</h6>
-                <small class="text-muted">Coming in Sprint 3</small>
+                <small class="text-muted">Get instant answers</small>
             </div>
         </a>
     </div>

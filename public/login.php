@@ -38,6 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ->execute([$user['admin_id']]);
                 }
 
+                $idCol = ['student' => 'student_id', 'staff' => 'staff_id', 'admin' => 'admin_id'][$role];
+                log_audit($role, (int) $user[$idCol], 'auth.login', null, null, $user['email']);
+
                 redirect($role . '/dashboard.php');
             } elseif ($user && (int) $user['is_active'] !== 1) {
                 flash('error', 'Your account has been deactivated. Please contact support.');

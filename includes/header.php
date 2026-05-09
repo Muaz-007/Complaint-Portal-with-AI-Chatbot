@@ -80,6 +80,12 @@ $auth_layout = $auth_layout ?? false; // set true on login/register for split-sc
                                 </a>
                             </li>
                             <li>
+                                <a class="dropdown-item" href="<?= e(url($role . '/profile.php')) ?>">
+                                    <i class="bi bi-person me-2"></i>My Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
                                 <a class="dropdown-item text-danger" href="<?= e(url('public/logout.php')) ?>">
                                     <i class="bi bi-box-arrow-right me-2"></i>Logout
                                 </a>

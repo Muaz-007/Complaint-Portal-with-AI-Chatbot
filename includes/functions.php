@@ -129,3 +129,26 @@ function generate_reference_no(int $complaintId): string
 {
     return sprintf('CMP-%s-%04d', date('Y'), $complaintId);
 }
+
+/**
+ * Append an entry to the audit_log table. Failures are swallowed so audit
+ * problems never break the user flow.
+ */
+function log_audit(string $actorType, ?int $actorId, string $action,
+                   ?string $targetTable = null, ?int $targetId = null, ?string $details = null): void
+{
+    try {
+        if (!function_exists('db')) {
+            require_once __DIR__ . '/../config/database.php';
+        }
+        db()->prepare(
+            'INSERT INTO audit_log (actor_type, actor_id, action, target_table, target_id, details, ip_address)
+             VALUES (?, ?, ?, ?, ?, ?, ?)'
+        )->execute([
+            $actorType, $actorId, $action, $targetTable, $targetId, $details,
+            $_SERVER['REMOTE_ADDR'] ?? null,
+        ]);
+    } catch (Throwable $e) {
+        // Intentional: audit must never block the request
+    }
+}

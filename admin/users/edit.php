@@ -80,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $params[] = $id;
                 }
                 $pdo->prepare($sql)->execute($params);
+                $admin = current_user();
+                log_audit('admin', (int) $admin['id'], 'user.update.' . $type, $tableMap[$type], $id, $old['email']);
                 flash('success', ucfirst($type) . ' account updated.');
             } else {
                 $hash = password_hash($password, PASSWORD_BCRYPT);
@@ -100,6 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'INSERT INTO admins (name, email, password_hash) VALUES (?, ?, ?)'
                     )->execute([$old['name'], $old['email'], $hash]);
                 }
+                $admin = current_user();
+                log_audit('admin', (int) $admin['id'], 'user.create.' . $type, $tableMap[$type], (int) $pdo->lastInsertId(), $old['email']);
                 flash('success', ucfirst($type) . ' account created.');
             }
             redirect('admin/users/list.php?type=' . $type);

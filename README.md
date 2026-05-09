@@ -1,21 +1,23 @@
 # Smart University Complaint Portal with AI Chatbot
 
-A web-based complaint management system for universities, with an integrated AI chatbot for instant student support. Built with **PHP 8 + MySQL 8 + Bootstrap 5**.
+A web-based complaint management system for universities, with an integrated AI chatbot for instant student support. Built with **PHP 8 + MySQL 8 + Bootstrap 5 + Chart.js**.
 
-> Status: **Sprint 0 — initial scaffolding in progress.**
+> Status: **Sprints 0–4 complete.** Functional end-to-end.
 
 ---
 
-## Overview
+## What works
 
-The portal lets students submit and track complaints, lets department staff manage and resolve them, and gives administrators full oversight with reporting and AI chatbot management.
-
-Three user roles:
-- **Student** — submit complaints, track status, chat with AI bot, give feedback
-- **Department Staff** — handle assigned complaints, communicate with students
-- **Admin** — manage users, departments, chatbot knowledge base, and reports
-
-Full requirements: see [`docs/saqib.docx`](docs/saqib.docx).
+| Module | Features |
+|---|---|
+| **Auth** | Real login & registration for Student / Staff / Admin (bcrypt, CSRF, RBAC, 30-min idle timeout) |
+| **Student** | Submit complaint with attachment, auto-routing to dept, real-time tracking, two-way messaging, 5-star feedback |
+| **Staff** | Department queue (priority-sorted), accept tickets, status workflow, internal notes, student replies |
+| **Admin** | Full user CRUD, department management, FAQ knowledge base, charts dashboard, audit trail viewer |
+| **AI Chatbot** | Keyword-match FAQ engine with hit tracking, escalation to formal complaint when no match |
+| **Profile** | Update name/email/phone + change password (all 3 roles) |
+| **Reports** | Chart.js: 14-day submissions, status doughnut, by-department, by-priority, satisfaction ratings |
+| **Audit Log** | Every login, status change, user/department/FAQ edit logged with actor + IP |
 
 ---
 
@@ -23,37 +25,58 @@ Full requirements: see [`docs/saqib.docx`](docs/saqib.docx).
 
 | Layer | Technologies |
 |---|---|
-| Frontend | HTML5, CSS3, Bootstrap 5, JavaScript, jQuery, Chart.js |
-| Backend | PHP 8.x, MySQL 8.x |
-| AI | Botpress (NLP + custom knowledge base) |
-| Tools | Composer, PHPMailer, TCPDF, XAMPP, VS Code, Git |
-| Security | bcrypt, HTTPS/SSL, prepared statements, input sanitization |
+| Frontend | HTML5, CSS3, Bootstrap 5.3, Bootstrap Icons, Inter + Poppins fonts, Chart.js 4 |
+| Backend | PHP 8.x (PDO, prepared statements, bcrypt) |
+| Database | MySQL 8.x / MariaDB 10.4+ (InnoDB, utf8mb4) |
+| AI | PHP keyword-match engine over `faqs` table (no external service required) |
+| Tools | XAMPP, VS Code, Git, GitHub Desktop |
+| Security | bcrypt, CSRF tokens, prepared statements, XSS escaping, file upload whitelist, role-based access |
 
 ---
 
-## Sprint Roadmap
+## Setup
 
-| Sprint | Focus |
-|---|---|
-| **0** | Project scaffold, DB schema, base layout |
-| **1** | Student module — registration, login, complaint submission, tracking |
-| **2** | Department staff module — dashboard, status updates, messaging |
-| **3** | AI Chatbot integration + automatic ticket escalation |
-| **4** | Admin panel — user/department management, reports (Chart.js + PDF) |
-| **5** | Testing, security audit, deployment |
-
----
-
-## Setup (will be expanded as features land)
-
-1. Clone the repo into your XAMPP `htdocs` folder:
+1. Clone or pull the repo into your XAMPP `htdocs` (recommended path: `complaint-portal`)
    ```
-   C:\xampp\htdocs\Complaint-Portal-with-AI-Chatbot\
+   C:\xampp\htdocs\complaint-portal\
    ```
+   Or symlink: `New-Item -ItemType SymbolicLink -Path C:\xampp\htdocs\complaint-portal -Target "C:\Projects\Saqib Project"` (PowerShell as admin)
 2. Start **Apache** and **MySQL** from XAMPP Control Panel.
-3. (Coming Sprint 0) Import `database/schema.sql` via phpMyAdmin.
-4. (Coming Sprint 0) Update DB credentials in `config/database.php`.
-5. Open `http://localhost/Complaint-Portal-with-AI-Chatbot/public/` in your browser.
+3. Open phpMyAdmin → Import `database/schema.sql`.
+4. Edit `config/config.php` if your DB password is not blank (XAMPP default is blank).
+5. Open `http://localhost/complaint-portal/public/` in your browser.
+
+---
+
+## Default credentials
+
+After importing `schema.sql`:
+
+| Role | Email | Password |
+|---|---|---|
+| Administrator | `admin@university.edu` | `admin123` |
+
+> **Change this password after your first login.** (Profile → Change Password)
+
+Students self-register at `/public/register.php`. Staff are created by the admin from `/admin/users/list.php?type=staff`.
+
+---
+
+## Folder structure
+
+```
+.
+├── admin/              # Admin pages — dashboard, users, departments, faqs, reports, audit, profile
+├── chatbot/api.php     # AI matching endpoint
+├── config/             # App constants + PDO connection
+├── database/schema.sql # Full DB schema + seed data (admin + 5 depts + 10 FAQs)
+├── docs/saqib.docx     # Original requirements document
+├── includes/           # Shared partials — auth, header, footer, helpers
+├── public/             # Public pages — landing, login, register, logout, assets
+├── staff/              # Staff pages — dashboard, complaints, profile
+├── student/            # Student pages — dashboard, complaints, chatbot, profile
+└── uploads/            # Complaint attachments (gitignored)
+```
 
 ---
 

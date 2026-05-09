@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare(
                 'UPDATE complaints SET status = "in_progress", assigned_staff_id = ? WHERE complaint_id = ?'
             )->execute([$user['id'], $complaint_id]);
+            log_audit('staff', (int) $user['id'], 'complaint.accept', 'complaints', $complaint_id, $complaint['reference_no']);
             flash('success', 'You have accepted this complaint. Status set to In Progress.');
         } elseif ($action === 'status') {
             $newStatus = $_POST['status'] ?? '';
@@ -57,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'UPDATE complaints SET status = ?, resolved_at = NULL WHERE complaint_id = ?'
                     )->execute([$newStatus, $complaint_id]);
                 }
+                log_audit('staff', (int) $user['id'], 'complaint.status.' . $newStatus, 'complaints', $complaint_id, $complaint['reference_no']);
                 flash('success', 'Status updated to ' . str_replace('_', ' ', $newStatus) . '.');
             }
         }
