@@ -55,9 +55,24 @@
         });
     }
 
+    /**
+     * Add shadow to navbar after a few px of scroll.
+     */
+    function navbarScrollEffect() {
+        const nav = document.getElementById('mainNavbar');
+        if (!nav) return;
+        const onScroll = () => {
+            if (window.scrollY > 8) nav.classList.add('navbar-scrolled');
+            else nav.classList.remove('navbar-scrolled');
+        };
+        document.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         autoDismissAlerts();
         preventDoubleSubmit();
         confirmDestructiveLinks();
+        navbarScrollEffect();
     });
 })();

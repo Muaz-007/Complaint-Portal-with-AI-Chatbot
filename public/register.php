@@ -20,73 +20,134 @@ try {
     $departments = db()->query('SELECT department_id, name FROM departments WHERE is_active = 1 ORDER BY name')
                        ->fetchAll();
 } catch (Throwable $e) {
-    // DB might not be imported yet; show form without dropdown options.
     flash('warning', 'Departments could not be loaded. Has the schema been imported?');
 }
 
 $page_title = 'Register';
+$auth_layout = true;
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h4 class="mb-3 text-center"><i class="bi bi-person-plus me-1"></i> Student Registration</h4>
+<div class="auth-shell">
+    <!-- Left panel — branding -->
+    <aside class="auth-aside">
+        <div>
+            <a href="<?= e(url('public/index.php')) ?>" class="d-flex align-items-center gap-2 text-white text-decoration-none mb-5">
+                <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                <span style="font-family:'Poppins',sans-serif;font-weight:700;"><?= e(APP_NAME) ?></span>
+            </a>
 
-                <form method="post" novalidate>
-                    <?= csrf_field() ?>
+            <h2 class="mb-3">Join your campus portal.</h2>
+            <p class="mb-4">
+                Create your free student account and unlock instant AI support, transparent
+                complaint tracking, and direct communication with your university departments.
+            </p>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" id="name" name="name" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="roll_no" class="form-label">Roll No.</label>
-                            <input type="text" id="roll_no" name="roll_no" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">University Email</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label">Phone (optional)</label>
-                            <input type="tel" id="phone" name="phone" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label for="department_id" class="form-label">Department</label>
-                            <select id="department_id" name="department_id" class="form-select" required>
-                                <option value="">— Select your department —</option>
-                                <?php foreach ($departments as $d): ?>
-                                    <option value="<?= e((string) $d['department_id']) ?>">
-                                        <?= e($d['name']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control"
-                                   minlength="8" required autocomplete="new-password">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="password_confirm" class="form-label">Confirm Password</label>
-                            <input type="password" id="password_confirm" name="password_confirm"
-                                   class="form-control" minlength="8" required autocomplete="new-password">
-                        </div>
+            <div class="mt-5">
+                <div class="point">
+                    <div class="point-ico"><i class="bi bi-check2-circle"></i></div>
+                    <div>
+                        <p class="point-title">Free for all students</p>
+                        <p class="point-desc">No fees, no ads, just a better experience.</p>
                     </div>
-
-                    <button type="submit" class="btn btn-primary w-100 mt-4">Create Account</button>
-                </form>
-
-                <p class="text-center small text-muted mt-3 mb-0">
-                    Already registered?
-                    <a href="<?= e(url('public/login.php')) ?>">Login here</a>
-                </p>
+                </div>
+                <div class="point">
+                    <div class="point-ico"><i class="bi bi-stopwatch-fill"></i></div>
+                    <div>
+                        <p class="point-title">Setup in under a minute</p>
+                        <p class="point-desc">Just a few details and you're in.</p>
+                    </div>
+                </div>
+                <div class="point">
+                    <div class="point-ico"><i class="bi bi-lock-fill"></i></div>
+                    <div>
+                        <p class="point-title">Your data, your privacy</p>
+                        <p class="point-desc">Encrypted, never shared, never sold.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="small" style="color:rgba(255,255,255,0.65);">
+            &copy; <?= date('Y') ?> <?= e(APP_NAME) ?>
+        </div>
+    </aside>
+
+    <!-- Right panel — form -->
+    <main class="auth-main">
+        <div class="auth-card fade-up">
+            <div class="auth-logo"><i class="bi bi-person-plus-fill"></i></div>
+
+            <h2 class="mb-1">Create your account</h2>
+            <p class="text-muted mb-4">
+                Already a member?
+                <a href="<?= e(url('public/login.php')) ?>" class="fw-semibold">Sign in</a>
+            </p>
+
+            <?= render_flashes() ?>
+
+            <form method="post" novalidate>
+                <?= csrf_field() ?>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Ahmed Khan" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="roll_no" class="form-label">Roll No.</label>
+                        <input type="text" id="roll_no" name="roll_no" class="form-control" placeholder="BCS-21-001" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">University Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@university.edu" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone <small class="text-muted">(optional)</small></label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="03XX-XXXXXXX">
+                    </div>
+                    <div class="col-12">
+                        <label for="department_id" class="form-label">Department</label>
+                        <select id="department_id" name="department_id" class="form-select" required>
+                            <option value="">— Select your department —</option>
+                            <?php foreach ($departments as $d): ?>
+                                <option value="<?= e((string) $d['department_id']) ?>">
+                                    <?= e($d['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="password_confirm" class="form-label">Confirm Password</label>
+                        <input type="password" id="password_confirm" name="password_confirm"
+                               class="form-control" placeholder="Re-enter password" minlength="8" required autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="form-check mt-3 mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label small" for="terms">
+                        I agree to the <a href="#">terms of service</a> and <a href="#">privacy policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                    Create Account <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="<?= e(url('public/index.php')) ?>" class="small text-muted text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> Back to home
+                </a>
+            </div>
+        </div>
+    </main>
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
